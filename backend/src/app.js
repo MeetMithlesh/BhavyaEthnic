@@ -27,7 +27,7 @@ const uploadsPath = path.resolve(__dirname, "..", "uploads");
 app.set("trust proxy", 1);
 
 const allowedOrigins = [
-  "bhavyaethnicjaipur.com",
+  "https://www.bhavyaethnicjaipur.com",
   process.env.CLIENT_URL,
   ...(process.env.CLIENT_URLS ? process.env.CLIENT_URLS.split(",") : []),
 ]
