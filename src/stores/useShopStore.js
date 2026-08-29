@@ -308,24 +308,22 @@ export const useShopStore = create(
         }
       },
 
-      createProduct: async (product) => {
-        // Client-side guard for missing description
-        if (!product?.description?.trim()) {
-          const errorMsg = "Product description is required";
-          toast.error(errorMsg);
-          throw new Error(errorMsg);
-        }
-
-        try {
-          const { data } = await api.post("/products", product);
-          set((state) => ({ products: [data.data, ...state.products] }));
-          toast.success("Product saved");
-          return data.data;
-        } catch (error) {
-          toast.error(getErrorMessage(error, "Unable to save product"));
-          throw error;
-        }
+// In useShopStore.js
+createProduct: async (product) => {
+  try {
+    const { data } = await api.post("/products", product, {
+      headers: {
+        "Content-Type": "application/json",
       },
+    });
+    set((state) => ({ products: [data.data, ...state.products] }));
+    toast.success("Product saved");
+    return data.data;
+  } catch (error) {
+    toast.error(getErrorMessage(error, "Unable to save product"));
+    throw error;
+  }
+},
 
       updateProduct: async (productId, patch) => {
         // Prevent clearing the description during an update
