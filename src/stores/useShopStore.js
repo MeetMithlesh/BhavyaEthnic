@@ -3,8 +3,16 @@ import { persist } from "zustand/middleware";
 import toast from "react-hot-toast";
 import api from "../utils/api";
 
-const getErrorMessage = (error, fallback) =>
-  error?.response?.data?.message || error?.message || fallback;
+const getErrorMessage = (error, fallback) => {
+  const data = error?.response?.data;
+  if (data?.errors && Array.isArray(data.errors) && data.errors.length > 0) {
+    return data.errors.map((err) => err.msg || err.message).join(", ");
+  }
+  if (data?.details && Array.isArray(data.details) && data.details.length > 0) {
+    return data.details.map((err) => err.message).join(", ");
+  }
+  return data?.message || error?.message || fallback;
+};
 
 const getUserId = (user) => user?.id || user?._id;
 
