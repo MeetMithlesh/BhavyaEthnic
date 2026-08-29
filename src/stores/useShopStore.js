@@ -301,6 +301,13 @@ export const useShopStore = create(
       },
 
       createProduct: async (product) => {
+        // Client-side guard for missing description
+        if (!product?.description?.trim()) {
+          const errorMsg = "Product description is required";
+          toast.error(errorMsg);
+          throw new Error(errorMsg);
+        }
+
         try {
           const { data } = await api.post("/products", product);
           set((state) => ({ products: [data.data, ...state.products] }));
@@ -313,6 +320,13 @@ export const useShopStore = create(
       },
 
       updateProduct: async (productId, patch) => {
+        // Prevent clearing the description during an update
+        if (patch.description !== undefined && !patch.description?.trim()) {
+          const errorMsg = "Product description is required";
+          toast.error(errorMsg);
+          throw new Error(errorMsg);
+        }
+
         try {
           const { data } = await api.put(`/products/${productId}`, patch);
           set((state) => ({
